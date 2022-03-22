@@ -7,10 +7,48 @@ const ChatFeed = (property) => {                  // functional component
 
     const chat = chats && chats[activeChat];     // if chat exist, find chats and then activeChat.
 
-    console.log(chat, userName, messages)
+    const renderMessages = () => {
+        const keys = Object.keys(messages);
+
+        return keys.map((key, index) => {
+            const message = messages[key];
+            const lastMessageKey = index === 0 ? null : keys[index - 1];  // if index equals 0, return null else return keys[index-1] i.e if there are messages find the last one.
+            const isMyMessage = userName === message.sender.username;
+
+            return (
+                <div key={`msg_${index}`} style={{width: '100%'}}>
+                    <div className='message-block'>
+                        {
+                            isMyMessage        // if its a message from me, display MyMessage, if not display TheirMessage
+                            ? <MyMessage message={message}/>   //message is passed as prop
+                            : <TheirMessage message={message} lastMessage={messages[lastMessageKey]}/>  // 2 props is passed here
+                        }
+                    </div>
+                    
+                    <div className='read-receipts' style={{marginRight: isMyMessage ? '18px' : '0px', marginLeft: isMyMessage ? '0px' : '68px'}}>  
+                        read-receipts
+                    </div>
+
+                </div> 
+            )
+        })
+    }
+
+   if (!chat) return 'Loading'; // if chat no dey return Loading
+
     return (
-        <div>
-            ChatFeed
+        <div className='chat-feed'>
+            <div className='chat-title-container'>
+                <div className='chat-title'>{chat.title}</div>                
+                <div className='chat-subtitle'>
+                    {chat.people.map((person) => ` ${person.person.username}`)}
+                </div>
+            </div>
+            {renderMessages()}
+            <div style={{height: '100px'}} />
+            <div className='message-form-container'>
+                <MessageForm {...property} chatId={activeChat}/>
+            </div>
         </div>
     )
 }
