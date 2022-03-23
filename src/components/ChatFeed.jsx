@@ -7,6 +7,16 @@ const ChatFeed = (property) => {                  // functional component
 
     const chat = chats && chats[activeChat];     // if chat exist, find chats and then activeChat.
 
+    const renderReadReceipts = (message, isMyMessage) => {
+        return chat.people.map((person, index) => person.last_read === message.id && (      // we render the code in the div if the message has been read
+            <div 
+                key={`read_${index}`}
+                className='read-receipt'
+                style={{ float: isMyMessage? 'right': 'left', backgroundImage: `url(${person?.person?.avatar})`}}
+            />
+        ))
+    }
+
     const renderMessages = () => {
         const keys = Object.keys(messages);
 
@@ -26,7 +36,7 @@ const ChatFeed = (property) => {                  // functional component
                     </div>
                     
                     <div className='read-receipts' style={{marginRight: isMyMessage ? '18px' : '0px', marginLeft: isMyMessage ? '0px' : '68px'}}>  
-                        read-receipts
+                        {renderReadReceipts(message, isMyMessage)};
                     </div>
 
                 </div> 
